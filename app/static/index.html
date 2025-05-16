@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI SQL Agent</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    textarea, select, input, button { width: 100%; margin-top: 0.5rem; margin-bottom: 1rem; padding: 0.5rem; font-size: 1rem; }
+    pre { background: #f5f5f5; padding: 1rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>AI SQL Agent</h1>
+
+  <label for="dialect">SQL Dialect:</label>
+  <select id="dialect">
+    <option value="PostgreSQL">PostgreSQL</option>
+    <option value="MySQL">MySQL</option>
+    <option value="SQLite">SQLite</option>
+  </select>
+
+  <label for="mode">Mode:</label>
+  <select id="mode">
+    <option value="generate">Generate Query</option>
+    <option value="clarify">Clarify Prompt</option>
+  </select>
+
+  <label for="prompt">Natural Language Prompt:</label>
+  <textarea id="prompt" rows="4" placeholder="e.g., Find all customers who ordered books in March."></textarea>
+
+  <button onclick="submitPrompt()">Submit</button>
+
+  <h3>Response</h3>
+  <pre id="response"></pre>
+
+  <script>
+    async function submitPrompt() {
+      connection()
+
+      const dialect = document.getElementById('dialect').value;
+      const mode = document.getElementById('mode').value;
+      const prompt = document.getElementById('prompt').value;
+      const resEl = document.getElementById('response');
+      resEl.textContent = 'Loading...';
+
+      try {
+        const response = await fetch('/api/sql-agent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dialect, mode, prompt })
+        });
+
+        const data = await response.json();
+        resEl.textContent = data.response;
+      } 
+      catch (err) {
+        resEl.textContent = 'Error: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
