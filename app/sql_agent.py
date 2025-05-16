@@ -3,7 +3,7 @@ import openai
 import os
 
 SCHEMA_PATH = Path("schema.sql")
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("DEEPSEEK_API_KEY")
 
 def load_schema():
     return SCHEMA_PATH.read_text()
