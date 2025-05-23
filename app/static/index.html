@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="shortcut icon" href="#">
   <title>AI SQL Agent</title>
   <style>
     body { font-family: sans-serif; margin: 2rem; }
@@ -35,8 +36,6 @@
 
   <script>
     async function submitPrompt() {
-      connection()
-
       const dialect = document.getElementById('dialect').value;
       const mode = document.getElementById('mode').value;
       const prompt = document.getElementById('prompt').value;
@@ -50,10 +49,10 @@
           body: JSON.stringify({ dialect, mode, prompt })
         });
 
+        if (!response.ok) throw new Error(`HTTP error ${response.status}`);
         const data = await response.json();
         resEl.textContent = data.response;
-      } 
-      catch (err) {
+      } catch (err) {
         resEl.textContent = 'Error: ' + err.message;
       }
     }
