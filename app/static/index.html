@@ -8,6 +8,9 @@
     body { font-family: sans-serif; margin: 2rem; }
     textarea, select, input, button { width: 100%; margin-top: 0.5rem; margin-bottom: 1rem; padding: 0.5rem; font-size: 1rem; }
     pre { background: #f5f5f5; padding: 1rem; white-space: pre-wrap; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+    th { background-color: #f0f0f0; }
   </style>
 </head>
 <body>
@@ -34,13 +37,18 @@
   <h3>Response</h3>
   <pre id="response"></pre>
 
+  <h3>Query Result</h3>
+  <div id="table-container"></div>
+
   <script>
     async function submitPrompt() {
       const dialect = document.getElementById('dialect').value;
       const mode = document.getElementById('mode').value;
       const prompt = document.getElementById('prompt').value;
       const resEl = document.getElementById('response');
+      const tableContainer = document.getElementById('table-container');
       resEl.textContent = 'Loading...';
+      tableContainer.innerHTML = '';
 
       try {
         const response = await fetch('/api/sql-agent', {
@@ -52,6 +60,37 @@
         if (!response.ok) throw new Error(`HTTP error ${response.status}`);
         const data = await response.json();
         resEl.textContent = data.response;
+
+        if (data.table && Array.isArray(data.table) && data.table.length > 0) {
+          const table = document.createElement('table');
+          const thead = document.createElement('thead');
+          const tbody = document.createElement('tbody');
+
+          // Create table header
+          const headerRow = document.createElement('tr');
+          Object.keys(data.table[0]).forEach(col => {
+            const th = document.createElement('th');
+            th.textContent = col;
+            headerRow.appendChild(th);
+          });
+          thead.appendChild(headerRow);
+
+          // Create table rows
+          data.table.forEach(row => {
+            const tr = document.createElement('tr');
+            Object.values(row).forEach(cell => {
+              const td = document.createElement('td');
+              td.textContent = cell;
+              tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          });
+
+          table.appendChild(thead);
+          table.appendChild(tbody);
+          tableContainer.appendChild(table);
+        }
+
       } catch (err) {
         resEl.textContent = 'Error: ' + err.message;
       }
