@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
-from app.sql_agent import *
+from app.sql_agent import agent
 
 SCHEMA = Path("app/schema.sql").read_text()
 app = FastAPI()
@@ -34,6 +34,6 @@ class QueryRequest(BaseModel):
 
 @app.post("/api/sql-agent")
 async def handle_prompt(request: QueryRequest):
-    prompt = build_prompt(request.dialect, request.prompt, request.mode, SCHEMA)
-    response = ask_ai(prompt)
+    prompt = agent().build_prompt(request.dialect, request.prompt, request.mode, SCHEMA)
+    response = agent().ask_ai(prompt=prompt)
     return {"response": f"Received: {request.dialect}, {request.mode}, {request.prompt}"}

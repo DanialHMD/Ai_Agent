@@ -8,14 +8,17 @@ class SQLQUERIES:
         self.sqlite_cursor = sqlite3.connect(database="none for now").cursor()
         self.mysql_cursor = mysql.connector.connect(host="localhost", port=3306, user="username", password="password").cursor()
 
-    def postgresql(self):
+    def dialect_finder(self):
         pass
+
+    def postgresql(self, query):
+        self.postgre_cursor.execute(query)
     
-    def sqlite(self):
+    def sqlite(self, query):
         pass
 
-    def mysql(self):
+    def mysql(self, query):
         pass
 
-    def query_initiator(self):
+    def query_initiator(self, query):
         pass
