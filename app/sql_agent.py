@@ -17,9 +17,9 @@ class Agent():
         """
 
     async def ask_ai(self, prompt: str) -> str:
-        client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key="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")
+        client = OpenAI(base_url=os.getenv("URL"), api_key=os.getenv("API-KEY"))
         response = client.chat.completions.create(
-            model="deepseek/deepseek-r1:free",
+            model=os.getenv("AI-MODEL"),
             messages=[
                 {"role": "system", "content": "Your job is to translate natural language into SQL queries. Be precise and return only the SQL."},
                 {"role": "user", "content": prompt},
