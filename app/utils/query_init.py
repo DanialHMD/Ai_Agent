@@ -17,9 +17,9 @@ import mysql.connector
 #         raise ValueError("Unsupported dialect")
 
 class DatabaseHandler:
-    def __init__(self, dialect: str, connection = get_connection()) -> None:
+    def __init__(self, dialect: str, connection=None) -> None:
         self.dialect = dialect.lower()
-        self.connection = connection
+        self.connection = connection or self.get_connection()
 
     def run_query(self, query:str):
         query = self.transform_query_for_dialect(query)

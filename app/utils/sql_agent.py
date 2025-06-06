@@ -3,9 +3,9 @@ import os
 from dotenv import load_dotenv
 from .query_init import DatabaseHandler
 
-class Agent():
+class Agent:
     def __init__(self):
-        load_dotenv()    
+        load_dotenv()
 
     async def build_prompt(self, dialect: str, user_prompt: str, mode: str, schema: str) -> str:
         return f"""
@@ -17,7 +17,7 @@ class Agent():
         {user_prompt}
         """
 
-    async def ask_ai(self, prompt: str) -> str:
+    async def ask_ai(self, prompt: str, dialect: str) -> str:
         client = OpenAI(base_url=os.getenv("URL"), api_key=os.getenv("API-KEY"))
         response = client.chat.completions.create(
             model=os.getenv("AI-MODEL"),
@@ -27,5 +27,5 @@ class Agent():
             ],
             stream=False
         )
-        response = await DatabaseHandler().run_query(response)
-        return response.choices[0].message.content
+        sql = response.choices[0].message.content.strip()
+        return DatabaseHandler(dialect).run_query(sql)

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from pathlib import Path
 from app.utils.sql_agent import Agent
 
-SCHEMA = Path("app/utils/schema.sql").read_text()
+SCHEMA = Path("app/utils/data.sql").read_text()
 app = FastAPI()
 
 app.add_middleware(
@@ -30,10 +30,10 @@ class QueryRequest(BaseModel):
     dialect: str
     prompt: str
     mode: str
-    model_schema = SCHEMA
+    schema: str|None
 
 @app.post("/api/sql-agent")
 async def handle_prompt(request: QueryRequest) -> dict:
-    prompt = await Agent().build_prompt(request.dialect, request.prompt, request.mode, request.model_schema)
-    response = await Agent().ask_ai(prompt=prompt)
+    prompt = await Agent().build_prompt(request.dialect, request.prompt, request.mode, SCHEMA)
+    response = await Agent().ask_ai(prompt=prompt, dialect=request.dialect)
     return {"response": f"{response}"}
