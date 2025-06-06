@@ -1,6 +1,7 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+from .query_init import DatabaseHandler
 
 class Agent():
     def __init__(self):
@@ -26,5 +27,5 @@ class Agent():
             ],
             stream=False
         )
-
+        response = await DatabaseHandler().run_query(response)
         return response.choices[0].message.content
