@@ -2,24 +2,24 @@ import sqlite3
 import psycopg2
 import mysql.connector
 
-# def get_connection(dialect: QueryRequest):
-#     if dialect == "sqlite":
-#         return sqlite3.connect("my.db")
-#     elif dialect == "postgresql":
-#         return psycopg2.connect(
-#             dbname="mydb", user="postgres", password="pass", host="localhost", port=5432
-#         )
-#     elif dialect == "mysql":
-#         return mysql.connector.connect(
-#             host="localhost", user="root", password="pass", database="mydb"
-#         )
-#     else:
-#         raise ValueError("Unsupported dialect")
-
 class DatabaseHandler:
-    def __init__(self, dialect: str, connection=None) -> None:
+    def __init__(self, dialect: str, connection: str) -> None:
         self.dialect = dialect.lower()
-        self.connection = connection or self.get_connection()
+        self.connection = self.get_connection(connection)
+
+    def get_connection(self, dialect):
+        if dialect == "sqlite":
+            return sqlite3.connect("my.db")
+        elif dialect == "postgresql":
+            return psycopg2.connect(
+                dbname="mydb", user="postgres", password="pass", host="localhost", port=5432
+            )
+        elif dialect == "mysql":
+            return mysql.connector.connect(
+                host="localhost", user="root", password="pass", database="mydb"
+            )
+        else:
+            raise ValueError("Unsupported dialect")
 
     def run_query(self, query:str):
         query = self.transform_query_for_dialect(query)
