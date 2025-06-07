@@ -3,9 +3,9 @@ import psycopg2
 import mysql.connector
 
 class DatabaseHandler:
-    def __init__(self, dialect: str, connection: str) -> None:
+    def __init__(self, dialect: str) -> None:
         self.dialect = dialect.lower()
-        self.connection = self.get_connection(connection)
+        self.connection = self.get_connection(self.dialect)
 
     def get_connection(self, dialect):
         if dialect == "sqlite":
