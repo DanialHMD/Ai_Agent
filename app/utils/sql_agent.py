@@ -18,12 +18,12 @@ class Agent:
         """
 
     async def ask_ai(self, prompt: str, dialect: str) -> str:
-        client = OpenAI(base_url=os.getenv("URL"), api_key=os.getenv("API-KEY"))
-        response = client.completions.create(
-            model=os.getenv("AI-MODEL"),
+        client = OpenAI(base_url=os.getenv("URL"), api_key=os.getenv("API_KEY"))
+        response = client.chat.completions.create(
+            model=os.getenv("AI_MODEL"),
             messages=[
-                {"role": "system", "content": "Your job is to translate natural language into SQL queries. Be precise and return only the SQL."},
-                {"role": "user", "content": prompt},
+                {"role": "system", "content": "Translate natural language to SQL."},
+                {"role": "user", "content": prompt}
             ],
             stream=False
         )

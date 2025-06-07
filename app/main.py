@@ -19,7 +19,7 @@ app.add_middleware(
 
 @app.get("/")
 def serve_index() -> FileResponse:
-    index_path = Path(__file__).parent / "app" / "static" / "index.html"
+    index_path = Path(__file__).parent / "static" / "index.html"
     return FileResponse(index_path)
 
 # Mount static files like CSS/JS under /static/
